@@ -12,6 +12,6 @@ class DataGenerator (fileName: String) {
   def processLines(processFunc: RedditComment => Unit): Unit =
     Source.fromFile(fileName).getLines
       .map(parse(_).extract[Map[String, Any]])
-      .map(dict => RedditComment(dict("id").toString, dict("author").toString, dict("body").toString, LocalDateTime.now))
+      .map(dict => RedditComment(dict("id").toString, dict("author").toString, dict("body").toString))
       .foreach(processFunc)
 }

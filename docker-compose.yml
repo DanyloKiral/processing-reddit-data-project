@@ -87,6 +87,8 @@ services:
       - language-service
       - sentiment-service
       - keyword-service
+    ports:
+      - 1234:1234
     environment:
       - KFTI_KAFKA_BROKER_ADDRESS=kafka-broker:9092
 

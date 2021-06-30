@@ -13,6 +13,7 @@ class Producer (kafkaBrokerAddress: String) (implicit mapper: ObjectMapper) {
 
   def sendMessageToTopic(key: String, message: Any, topic: String): Unit = {
     val serializedMessage = mapper.writeValueAsString(message)
+    println(s"Sending Comment = $message")
     val record = new ProducerRecord[String, String](topic, key, serializedMessage)
     producer.send(record).get
   }
