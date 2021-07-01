@@ -19,6 +19,7 @@ libraryDependencies += "org.json4s" %% "json4s-jackson" % "3.6.9"
 libraryDependencies += "org.apache.kafka" %% "kafka" % "2.8.0"
 libraryDependencies += "org.apache.kafka" %% "kafka-streams-scala" % "2.8.0"
 libraryDependencies += "edu.stanford.nlp" % "stanford-corenlp" % "3.5.2" artifacts (Artifact("stanford-corenlp", "models"), Artifact("stanford-corenlp"))
+libraryDependencies += "io.malcolmgreaves" % "cybozu-language-detection_2.11" % "1.1.0"
 
 val AkkaVersion = "2.6.8"
 val AkkaHttpVersion = "10.2.4"

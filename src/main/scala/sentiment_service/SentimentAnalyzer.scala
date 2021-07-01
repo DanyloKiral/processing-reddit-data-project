@@ -6,10 +6,10 @@ import edu.stanford.nlp.ling.CoreAnnotations
 import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations
 import edu.stanford.nlp.pipeline.{Annotation, StanfordCoreNLP}
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations
-import edu.stanford.nlp.trees.Tree
 import sentiment_service.Sentiment.Sentiment
+import collection.JavaConverters._
 
-object SentimentAnalyzer {
+class SentimentAnalyzer {
 
   val props = new Properties()
   props.setProperty("annotators", "tokenize, ssplit, parse, sentiment")
@@ -26,13 +26,12 @@ object SentimentAnalyzer {
     sentiment
   }
 
-  def extractSentiments(text: String): List[(String, Sentiment)] = {
+  private def extractSentiments(text: String): List[(String, Sentiment)] = {
     val annotation: Annotation = pipeline.process(text)
-    val sentences = annotation.asInstanceOf[Array[CoreAnnotations.SentencesAnnotation]]
+    val sentences = annotation.get(classOf[CoreAnnotations.SentencesAnnotation]).asScala
     sentences
-      .map(sentence => (sentence, sentence.asInstanceOf[Tree]))
+      .map(sentence => (sentence, sentence.get(classOf[SentimentCoreAnnotations.SentimentAnnotatedTree])))
       .map { case (sentence, tree) => (sentence.toString,Sentiment.toSentiment(RNNCoreAnnotations.getPredictedClass(tree))) }
       .toList
   }
-
 }

@@ -50,6 +50,8 @@ services:
       - generator-service
     environment:
       - KFTI_KAFKA_BROKER_ADDRESS=kafka-broker:9092
+    volumes:
+      - ./language_profiles:/language_profiles
 
   sentiment-service:
     container_name: sentiment-service

@@ -25,6 +25,8 @@ object SentimentMain extends App {
 
   createTopic
 
+  val sentimentAnalyzer = new SentimentAnalyzer()
+
   val topology = buildTopology()
   val streams: KafkaStreams = new KafkaStreams(topology, props)
 
@@ -40,13 +42,12 @@ object SentimentMain extends App {
 
     comments
       .mapValues(parse(_).extract[RedditComment])
-      .mapValues(x => if (x.comment.size > 20) "Positive" else "Negative")
-//      .mapValues(x => SentimentAnalyzer.mainSentiment(x.comment))
-//      .mapValues(x => x match {
-//        case Sentiment.NEGATIVE => "Negative"
-//        case Sentiment.POSITIVE => "Positive"
-//        case Sentiment.NEUTRAL => "Neutral"
-//      })
+      .mapValues(x => sentimentAnalyzer.mainSentiment(x.comment))
+      .mapValues(x => x match {
+        case Sentiment.NEGATIVE => "Negative"
+        case Sentiment.POSITIVE => "Positive"
+        case Sentiment.NEUTRAL => "Neutral"
+      })
       .to(Configs.SentimentsTopicName)
 
     builder.build()

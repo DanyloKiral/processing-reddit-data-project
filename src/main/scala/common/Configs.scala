@@ -21,6 +21,7 @@ object Configs {
   val LanguagesTopicName = Properties.envOrElse("KFTI_LANGUAGES_TOPIC_NAME", "comments-languages")
   val LanguagesTopicPartitions = Properties.envOrElse("KFTI_LANGUAGES_TOPIC_PARTITIONS", "1").toInt
   val LanguagesTopicReplication = Properties.envOrElse("KFTI_LANGUAGES_TOPIC_REPLICATION", "1").toShort
+  val LanguageDetectorProfilesPath = Properties.envOrElse("KFTI_LANGUAGES_DETECTOR_PROFILES_PATH", "/language_profiles")
 
   val StatisticsHost = Properties.envOrElse("KFTI_STATISTICS_HOST", "0.0.0.0")
   val StatisticsPort = Properties.envOrElse("KFTI_STATISTICS_PORT", "1234").toInt

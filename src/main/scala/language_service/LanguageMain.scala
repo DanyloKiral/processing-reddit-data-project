@@ -23,6 +23,9 @@ object LanguageMain extends App {
 
   createTopic
 
+  val languageDetector = new LanguageDetector()
+  languageDetector.init(Configs.LanguageDetectorProfilesPath)
+
   val topology = buildTopology()
   val streams: KafkaStreams = new KafkaStreams(topology, props)
 
@@ -38,7 +41,11 @@ object LanguageMain extends App {
 
     comments
       .mapValues(parse(_).extract[RedditComment])
-      .mapValues(x => if (x.comment.size > 10) "English" else "Chinese")
+      .mapValues(c => c.comment.replaceAll("[^a-zA-Z0-9 ]", "").toLowerCase)
+      .filter((k, t) => t.size > 0)
+      .mapValues(t => languageDetector.detect(t))
+      .filter((k, l) => l.nonEmpty)
+      .mapValues(_.get)
       .to(Configs.LanguagesTopicName)
 
     builder.build()
