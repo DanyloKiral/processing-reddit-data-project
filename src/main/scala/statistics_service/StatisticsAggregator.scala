@@ -3,7 +3,7 @@ package statistics_service
 import java.time.Duration
 import java.util.Properties
 
-import common.{Configs, LanguageMessages, RedditComment, SentimentMessages, Statistics}
+import common.{Configs, KeywordsMessages, LanguageMessages, RedditComment, SentimentMessages, Statistics}
 import org.apache.kafka.streams.scala.StreamsBuilder
 import org.apache.kafka.streams.scala.kstream.{KStream, KTable, Materialized}
 import org.json4s.jackson.JsonMethods.parse
@@ -22,6 +22,8 @@ import org.apache.kafka.streams.scala.ImplicitConversions._
 import org.json4s._
 import org.apache.kafka.streams.scala.Serdes._
 import org.apache.kafka.streams.state.QueryableStoreTypes
+
+import scala.collection.SortedMap
 
 
 class StatisticsAggregator {
@@ -76,6 +78,13 @@ class StatisticsAggregator {
       val next = sentimentsCountIterator.next
       result.sentimentStatistics.addOne(SentimentMessages(next.key, next.value))
     }
+
+    var keywords: List[(Long, String)] = List()
+    keywordsCountIterator.forEachRemaining(x => {
+      keywords = (keywords.::((x.value, x.key))).sortBy(x => x._1).takeRight(10)
+    })
+
+    result.top10Keywords = keywords.map(x => KeywordsMessages(x._2, x._1))
 
     result
   }

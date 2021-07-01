@@ -38,8 +38,9 @@ object KeywordMain extends App {
 
     comments
         .mapValues(parse(_).extract[RedditComment])
-      // todo: find keywords for comment
-        .flatMapValues(_.comment.toLowerCase.split(' '))
+        .mapValues(c => c.comment.replaceAll("[^a-zA-Z0-9 ]", "").toLowerCase)
+        .flatMapValues(_.split(' '))
+        .filter((k, t) => t.size > 3)
         .to(Configs.KeywordsTopicName)
 
     builder.build()
